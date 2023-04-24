@@ -1,28 +1,25 @@
-from fastapi import FastAPI, Body, Header, File, Depends, HTTPException
+from fastapi import Body, Header, File, APIRouter
 from app.models.user import User
 from app.models.author import Author
 from app.models.book import Book
-from starlette.status import HTTP_201_CREATED, HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_201_CREATED
 from starlette.responses import Response
-from fastapi.security import OAuth2PasswordRequestForm
-from app.utils.security import authenticate_user, create_jwt_token
-from app.models.jwt_user import JWTUser
 
-app_v1 = FastAPI(root_path="/v1")
+app_v1 = APIRouter()
 
 
-@app_v1.post("/user", status_code=HTTP_201_CREATED)
+@app_v1.post("/user", status_code=HTTP_201_CREATED, tags=["User"])
 async def post_user(user: User, x_custom: str = Header("default")):
     return {"request body": user, "request custom header": x_custom}
 
 
-@app_v1.get("/user")
+@app_v1.get("/user", tags=["User"])
 async def get_user_validation(password: str):
     return {"query parameter": password}
 
 
 @app_v1.get("/book/{isbn}", response_model=Book,
-            response_model_exclude=["author"])  # response_model_include=["name", "year"]
+            response_model_exclude=["author"], tags=["Book"])  # response_model_include=["name", "year"]
 async def get_book_with_isbn(isbn: str):
     author_dict = {
         "name": "author1",
@@ -40,9 +37,9 @@ async def get_book_with_isbn(isbn: str):
     # return {"query changeable parameter": isbn}
 
 
-@app_v1.get("/author/{id}/book")
-async def get_authors_books(id: int, category: str, order: str = "asc"):
-    return {"query changeable parameter": order + category + str(id)}
+@app_v1.get("/author/{id}/book", tags=["Book"])
+async def get_authors_books(idk: int, category: str, order: str = "asc"):
+    return {"query changeable parameter": order + category + str(idk)}
 
 
 @app_v1.patch("/author/name")
@@ -60,14 +57,3 @@ async def upload_user_photo(response: Response, profile_photo: bytes = File(...)
     response.headers["x-file-size"] = str(len(profile_photo))
     response.set_cookie(key="cookie-api", value="test")
     return {"file size", len(profile_photo)}
-
-
-@app_v1.post("/token")
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    jwt_user_dict = {"username": form_data.username, "password": form_data.password}
-    jwt_user = JWTUser(**jwt_user_dict)
-    user = authenticate_user(jwt_user)
-    if user is None:
-        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
-    jwt_token = create_jwt_token(user)
-    return {"token": jwt_token}
