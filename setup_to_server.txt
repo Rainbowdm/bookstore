@@ -1,0 +1,53 @@
+1. Setup 2 servers in Digital ocean: ubuntu-database, ubuntu-api-server
+2. Setup docker in ubuntu-database
+3. Setup postgresql docker in ubuntu-database:
+docker run --name=bookstore-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=bookstore -p 5432:5432 -d postgres:latest
+4. Connect to local machine terminal and add command: ssh -L 5432:localhost:5432 -N -f -l root {host}
+5. Create SQL tables in https://dbdiagram.io/
+Table users {
+  id serial [pk]
+  username text [not null]
+  password text [not null]
+  mail text
+  role text
+}
+
+Table books {
+  isbn text [pk, unique]
+  name text
+  author text
+  year int
+}
+
+Table authors {
+  id serial [pk]
+  name text
+  book array
+}
+6. Create SQL tables in postges
+create table users
+(
+    id       serial primary key,
+    username text not null,
+    password text not null,
+    mail     text,
+    role     text
+);
+
+
+create table books
+(
+    isbn  text primary key,
+    name   text,
+    author text,
+    year   int
+);
+
+create table authors
+(
+    id   serial primary key,
+    name text,
+    book text[]
+);
+
+7. View in local machine command: lsof -i tcp:5432 and kill connection to DB: killall ssh

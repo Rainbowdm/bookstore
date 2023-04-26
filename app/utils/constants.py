@@ -6,3 +6,9 @@ TOKEN_DESCRIPTION = "It checks username and password. If they are true, it retur
 TOKEN_SUMMARY = "It returns JWT token"
 
 ISBN_DESCRIPTION = "It is unique identifier for books"
+
+DB_HOST = "localhost"
+DB_USER = "admin"
+DB_PASSWORD = "admin"
+DB_NAME = "bookstore"
+DB_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
