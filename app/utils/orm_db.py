@@ -1,5 +1,5 @@
 from sqlalchemy import (MetaData, create_engine, Table, Column, Integer, Text, ARRAY)
-from constants import DB_URL
+from app.utils.constants import DB_URL
 
 metadata = MetaData()
 engine = create_engine(DB_URL)

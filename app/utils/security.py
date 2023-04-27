@@ -1,18 +1,17 @@
+from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
+
 from app.models.jwt_user import JWTUser
 from datetime import datetime, timedelta
 from app.utils.constants import JWT_EXPIRATION_TIME_MINUTES, JWT_ALGORITH, JW_SECRET_KEY
 import jwt
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
 import time
+from app.utils.db_funtions import db_check_token_user, db_check_jwt_username
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 password_context = CryptContext(schemes=["bcrypt"])
 oauth_schema = OAuth2PasswordBearer(tokenUrl="/token")
-jwt_user1 = {"username": "user1", "password": "$2b$12$.IJ7XLSIovt7hebPLMBSq.fxDca507nTe1iKd/HR5Y7DUkcKsDRnK",
-             "disabled": False, "role": "user"}
-fake_jwt_user1 = JWTUser(**jwt_user1)
 
 
 def get_hashed_password(password):
@@ -28,12 +27,16 @@ def verify_password(plain_password, hashed_password):
 
 
 # Authenticate username and password to give JWT token
-def authenticate_user(user: JWTUser):
-    if fake_jwt_user1.username == user.username:
-        if verify_password(user.password, fake_jwt_user1.password):
-            user.role = "admin"
-            return user
-    return False
+async def authenticate_user(user: JWTUser):
+    potential_users = await db_check_token_user(user)
+    is_valid = False
+    for db_user in potential_users:
+        if verify_password(user.password, db_user["password"]):
+            is_valid = True
+    if is_valid:
+        user.role = "admin"
+        return user
+    return None
 
 
 # Create access JWT token
@@ -45,18 +48,19 @@ def create_jwt_token(user: JWTUser):
 
 
 # Check whether JWT token is correct
-def check_jwt_token(token: str = Depends(oauth_schema)):
+async def check_jwt_token(token: str = Depends(oauth_schema)):
     try:
         jwt_payload = jwt.decode(token, JW_SECRET_KEY, algorithms=JWT_ALGORITH)
         username = jwt_payload.get("sub")
         role = jwt_payload.get("role")
         expiration = jwt_payload.get("exp")
         if time.time() < expiration:
-            if fake_jwt_user1.username == username:
+            is_valid = await db_check_jwt_username(username)
+            if is_valid:
                 return final_checks(role)
     except Exception as e:
-        raise False
-    raise False
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
+    raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
 
 
 # Last checking and returning the final result
@@ -64,4 +68,4 @@ def final_checks(role: str):
     if role == "admin":
         return True
     else:
-        return False
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)

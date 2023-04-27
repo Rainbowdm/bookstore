@@ -51,3 +51,14 @@ create table authors
 );
 
 7. View in local machine command: lsof -i tcp:5432 and kill connection to DB: killall ssh
+
+8. Add new table personal in postgres
+create table personal
+(
+    id       serial primary key,
+    name text,
+    password text,
+    mail     text,
+    role     text
+);
+
