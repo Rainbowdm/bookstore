@@ -1,0 +1,7 @@
+1. Setup redis in server ubuntu-database
+https://hub.docker.com/_/redis
+docker run --name my-redis -d -p 6379:6379 redis
+2. Install pip install aioredis in local machine
+https://aioredis.readthedocs.io/en/latest/getting-started/
+3. Connect to local machine terminal and add command: ssh -L 6379:localhost:6379 -N -f -l root {host}
+lsof -i tcp:6379

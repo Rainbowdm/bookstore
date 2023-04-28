@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
 
-from app.utils.constants import TOKEN_DESCRIPTION, TOKEN_SUMMARY
+from app.utils.constants import TOKEN_DESCRIPTION, TOKEN_SUMMARY, REDIS_URL
 from routes.v1 import app_v1
 from routes.v2 import app_v2
 from starlette.requests import Request
@@ -11,6 +11,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.utils.security import authenticate_user, create_jwt_token, check_jwt_token
 from app.models.jwt_user import JWTUser
 from app.utils.db_object import db
+import app.utils.redis_object as r
+import aioredis
 
 app = FastAPI(title="Bookstore API documentation", description="API used for Bookstore", version="1.0.0")
 app.include_router(app_v1, prefix="/v1", dependencies=[Depends(check_jwt_token)])
@@ -20,11 +22,14 @@ app.include_router(app_v2, prefix="/v2", dependencies=[Depends(check_jwt_token)]
 @app.on_event("startup")
 async def connect_db():
     await db.connect()
+    r.redis = await aioredis.from_url(REDIS_URL)
 
 
 @app.on_event("shutdown")
 async def disconnect_db():
     await db.disconnect()
+    r.redis.close()
+    await r.redis.wait_closed()
 
 
 @app.post("/token", description=TOKEN_DESCRIPTION, summary=TOKEN_SUMMARY)
