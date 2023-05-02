@@ -2,8 +2,8 @@ import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
 
 from app.utils.constants import TOKEN_DESCRIPTION, TOKEN_SUMMARY, REDIS_URL
-from routes.v1 import app_v1
-from routes.v2 import app_v2
+from app.routes.v1 import app_v1
+from app.routes.v2 import app_v2
 from starlette.requests import Request
 from starlette.status import HTTP_401_UNAUTHORIZED
 from datetime import datetime
@@ -13,10 +13,11 @@ from app.models.jwt_user import JWTUser
 from app.utils.db_object import db
 import app.utils.redis_object as r
 import aioredis
+from app.utils.redis_object import check_test_redis
 
 app = FastAPI(title="Bookstore API documentation", description="API used for Bookstore", version="1.0.0")
-app.include_router(app_v1, prefix="/v1", dependencies=[Depends(check_jwt_token)])
-app.include_router(app_v2, prefix="/v2", dependencies=[Depends(check_jwt_token)])
+app.include_router(app_v1, prefix="/v1", dependencies=[Depends(check_jwt_token), Depends(check_test_redis)])
+app.include_router(app_v2, prefix="/v2", dependencies=[Depends(check_jwt_token), Depends(check_test_redis)])
 
 
 @app.on_event("startup")
