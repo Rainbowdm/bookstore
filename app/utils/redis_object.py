@@ -1,7 +1,9 @@
 import aioredis
 from app.utils.constants import TESTING, TEST_REDIS_URL
 
-redis = None
+# https://linuxhint.com/query-redis-python/
+# redis = None
+redis = aioredis.Redis()
 
 
 async def check_test_redis():
