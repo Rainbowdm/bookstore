@@ -25,7 +25,6 @@ REDIS_URL_PRODUCTION = "redis://10.114.0.3"
 
 TESTING = False
 IS_LOAD_TEST = False
-os.environ["PRODUCTION"] = "PRODUCTION"
 IS_PRODUCTION = True if os.environ["PRODUCTION"] == "true" else False
 
 TEST_DB_HOST = "localhost"
