@@ -14,7 +14,7 @@ ls
 mkdir bookstore
 ls
 4. Upload all of files project to API server file ~/bookstore
-scp -r bookstore root@209.38.237.156:~/bookstore
+scp -r bookstore root@209.38.237.156:~/bookstore or git clone repo
 5. Setup docker in ubuntu-api-server
 6. Build Dockerfile
 docker build -t bookstore-api-build .
