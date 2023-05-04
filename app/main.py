@@ -75,6 +75,7 @@ async def middleware(request: Request, call_next):
     # modify response
     execution_time = (datetime.utcnow() - start_time).microseconds
     response.headers["x-execution-time"] = str(execution_time)
+    print("x-execution-time" + execution_time)
     return response
 
 
