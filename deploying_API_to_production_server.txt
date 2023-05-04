@@ -1,0 +1,25 @@
+0. https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker
+1. Create Dockerfile:
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.10
+
+COPY requirements.txt /
+RUN python -m pip install -r /requirements.txt
+
+COPY . /app
+WORKDIR /app
+2. Create requirements.txt
+3. Connect to server and create file in ubuntu-api-server:
+ssh root@209.38.237.156
+ls
+mkdir bookstore
+ls
+4. Upload all of files project to API server file ~/bookstore
+scp -r bookstore root@209.38.237.156:~/bookstore
+5. Setup docker in ubuntu-api-server
+6. Build Dockerfile
+docker build -t bookstore-api-build .
+7. Run docker:
+docker run --name=bookstore-api -d -e MODULE_NAME="main" -e PORT="8000" -e PRODUCTION="true" -p 8000:8000 bookstore-api-build
+docker run -idt --name=bookstore-api -d -e MODULE_NAME="main" -e PORT="8000" -e PRODUCTION="true" -p 8000:8000 bookstore-api-build
+view docker logs:
+docker logs -f bookstore-api
