@@ -1,11 +1,13 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.10
+FROM python:3.10
 
-LABEL maintainer="Rainbow"
-
-# install dependencies
-COPY requirements.txt /
-RUN python -m pip install -r /requirements.txt
-
-COPY . .
 # set work directory
-WORKDIR /app
+WORKDIR /code
+
+COPY ./requirements.txt /code/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN pip install fastapi uvicorn
+
+COPY ./app /code/app
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
