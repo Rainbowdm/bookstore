@@ -1,7 +1,8 @@
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
 
-from app.utils.constants import TOKEN_DESCRIPTION, TOKEN_SUMMARY, REDIS_URL, TESTING, IS_LOAD_TEST
+from utils.constants import (TOKEN_DESCRIPTION, TOKEN_SUMMARY, REDIS_URL, TESTING,
+                             IS_PRODUCTION, REDIS_URL_PRODUCTION)
 from app.routes.v1 import app_v1
 from app.routes.v2 import app_v2
 from starlette.requests import Request
@@ -25,7 +26,10 @@ app.include_router(app_v2, prefix="/v2", dependencies=[Depends(check_jwt_token),
 async def connect_db():
     if not TESTING:
         await db.connect()
-        r.redis = await aioredis.from_url(REDIS_URL)
+        if IS_PRODUCTION:
+            r.redis = await aioredis.from_url(REDIS_URL_PRODUCTION)
+        else:
+            r.redis = await aioredis.from_url(REDIS_URL)
 
 
 @app.on_event("shutdown")
