@@ -21,7 +21,7 @@ UPLOAD_PHOTO_APIKEY = "064eeac6cd8f0148ed8ebb5622c5e8b9"
 UPLOAD_PHOTO_URL = f"https://api.imgbb.com/1/upload?key={UPLOAD_PHOTO_APIKEY}"
 
 REDIS_URL = "redis://localhost"
-REDIS_URL_PRODUCTION = "redis://10.114.0.3"
+REDIS_URL_PRODUCTION = "redis://138.197.183.1"
 
 TESTING = False
 IS_LOAD_TEST = False
