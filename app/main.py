@@ -44,7 +44,6 @@ async def disconnect_db():
 @app.post("/token", description=TOKEN_DESCRIPTION, summary=TOKEN_SUMMARY)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     redis_key = f"token:{form_data.username}, {form_data.password}"
-    logging.debug("redis_key:" + redis_key)
     user = await r.redis.get(redis_key)
     if not user:
         jwt_user_dict = {"username": form_data.username, "password": form_data.password}
@@ -76,7 +75,6 @@ async def middleware(request: Request, call_next):
     # modify response
     execution_time = (datetime.utcnow() - start_time).microseconds
     response.headers["x-execution-time"] = str(execution_time)
-    logging.debug("x-execution-time")
     return response
 
 
