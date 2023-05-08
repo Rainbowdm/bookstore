@@ -21,7 +21,7 @@ class BookstoreLocustTask(TaskSet):
 class BookstoreLoadTest(HttpUser):
     tasks = [BookstoreLocustTask]
     # host = "http://localhost:8000"
-    host = "http://157.245.24.121:8000"
+    host = "http://146.190.205.190:80"
 
 
 # locust -f ./app/tests/locust_load_test.py
