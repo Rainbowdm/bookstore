@@ -16,7 +16,6 @@ import app.utils.redis_object as r
 import aioredis
 from app.utils.redis_object import check_test_redis
 import pickle
-import logging
 
 app = FastAPI(title="Bookstore API documentation", description="API used for Bookstore", version="1.0.0")
 app.include_router(app_v1, prefix="/v1", dependencies=[Depends(check_jwt_token), Depends(check_test_redis)])
