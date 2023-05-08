@@ -14,13 +14,14 @@ class BookstoreLocustTask(TaskSet):
     def test_post_user(self):
         user_dict = {"name": "personal1", "password": "pass1", "mail": "a@b.com", "role": "admin"}
         auth_header = {
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjgzNDc5NjkxfQ.yPeNVYGPBOTd2VFQbU8ukMInhscdyjRpMsc8tNVDIaA"}
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyZGIiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE2ODM5NzA5OTd9.Hi2tZ6BWfC9BXc-dtd-05Ku-dsGEuTIQHYIY5dCDK5A"}
         self.client.post("/v1/user", json=user_dict, headers=auth_header)
 
 
 class BookstoreLoadTest(HttpUser):
     tasks = [BookstoreLocustTask]
-    host = "http://localhost:8000"
+    # host = "http://localhost:8000"
+    host = "http://157.245.24.121:8000"
 
 
 # locust -f ./app/tests/locust_load_test.py
