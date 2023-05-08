@@ -29,6 +29,7 @@ REDIS_URL_PRODUCTION = os.getenv("REDIS_URL_PRODUCTION")
 
 TESTING = False
 IS_LOAD_TEST = False
+os.environ["PRODUCTION"] = "PRODUCTION"
 IS_PRODUCTION = True if os.environ["PRODUCTION"] == "true" else False
 
 TEST_DB_HOST = os.getenv("TEST_DB_HOST")
