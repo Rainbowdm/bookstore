@@ -1,0 +1,9 @@
+1. Write bookstore.nginx file
+2. Write nginx.conf file
+3. Write Dockerfile
+4. Go to ubuntu-api-server and build Dockerfile:
+docker build -t bookstore-nginx .
+5. Run docker container:
+docker run --name=api-nginx -d -p 80:80 bookstore-nginx
+view docker logs:
+docker logs -f bookstore-nginx
