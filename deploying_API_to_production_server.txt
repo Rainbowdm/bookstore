@@ -31,3 +31,6 @@ docker build -t bookstore-api-build .
 docker run --name=bookstore-api -d -e MODULE_NAME="main" -e PORT="8000" -e PRODUCTION="true" -p 8000:8000 bookstore-api-build
 view docker logs:
 docker logs -f bookstore-api
+8. Create deploy file and Run
+chmod +x deploy.sh
+./deploy.sh

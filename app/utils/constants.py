@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 
+# Create .env file and add parameters
 load_dotenv()
 
 JW_SECRET_KEY = os.getenv("JW_SECRET_KEY")
