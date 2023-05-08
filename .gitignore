@@ -81,7 +81,7 @@ celerybeat-schedule
 *.sage.py
 
 # dotenvheroku restart
-.env
+app/.env
 
 # virtualenv
 .venv
