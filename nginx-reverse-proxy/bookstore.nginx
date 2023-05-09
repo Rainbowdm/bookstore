@@ -1,7 +1,17 @@
+limit_req_zone $binary_remote_addr zone=bookstore:10m rate=2r/m;
+
 server {
     listen 80;
 
     server_name bookstores.world;
+
+    location /v1/user {
+        #        deny {ip}; # block ip adress
+        #        allow {ip}; # block ip adress
+        #        deny all;
+        limit_req zone=bookstore;
+        proxy_pass http://bookstore-load-balancer;
+    }
 
     location / {
         proxy_pass http://bookstore-load-balancer/;
