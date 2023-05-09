@@ -6,8 +6,13 @@ from starlette.status import HTTP_201_CREATED
 from starlette.responses import Response
 from app.utils.helper_functions import upload_image_to_server
 from app.utils.db_funtions import (
-    db_insert_personal, db_check_personal, db_get_book_with_isbn,
-    db_get_author, db_get_author_from_id, db_patch_author_name)
+    db_insert_personal,
+    db_check_personal,
+    db_get_book_with_isbn,
+    db_get_author,
+    db_get_author_from_id,
+    db_patch_author_name,
+)
 import app.utils.redis_object as r
 import pickle
 
@@ -37,8 +42,12 @@ async def get_user_validation(name: str = Body(...), password: str = Body(...)):
         return {"is_valid (db)": result}
 
 
-@app_v1.get("/book/{isbn}", response_model=Book, response_model_include=["name", "year"],
-            tags=["Book"])  # response_model_exclude=["author"]
+@app_v1.get(
+    "/book/{isbn}",
+    response_model=Book,
+    response_model_include=["name", "year"],
+    tags=["Book"],
+)  # response_model_exclude=["author"]
 async def get_book_with_isbn(isbn: str):
     result = await r.redis.get(isbn)
     if result:
@@ -76,7 +85,9 @@ async def patch_author_name(id: int, name: str = Body(..., embed=True)):
 
 
 @app_v1.post("/user/author")
-async def post_user_and_author(user: User, author: Author, bookstore_name: str = Body(..., embed=True)):
+async def post_user_and_author(
+    user: User, author: Author, bookstore_name: str = Body(..., embed=True)
+):
     return {"user": user, "author": author, "bookstore_name": bookstore_name}
 
 

@@ -1,8 +1,15 @@
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
 
-from app.utils.constants import (TOKEN_DESCRIPTION, TOKEN_SUMMARY, REDIS_URL, TESTING,
-                                 IS_PRODUCTION, REDIS_URL_PRODUCTION)
+from app.utils.constants import (
+    TOKEN_DESCRIPTION,
+    TOKEN_SUMMARY,
+    REDIS_URL,
+    TESTING,
+    IS_PRODUCTION,
+    REDIS_URL_PRODUCTION,
+    TOKEN_INVALID_CREDENTIALS_MSG,
+)
 from app.routes.v1 import app_v1
 from app.routes.v2 import app_v2
 from starlette.requests import Request
@@ -17,9 +24,21 @@ import aioredis
 from app.utils.redis_object import check_test_redis
 import pickle
 
-app = FastAPI(title="Bookstore API documentation", description="API used for Bookstore", version="1.0.0")
-app.include_router(app_v1, prefix="/v1", dependencies=[Depends(check_jwt_token), Depends(check_test_redis)])
-app.include_router(app_v2, prefix="/v2", dependencies=[Depends(check_jwt_token), Depends(check_test_redis)])
+app = FastAPI(
+    title="Bookstore API documentation",
+    description="API used for Bookstore",
+    version="1.0.0",
+)
+app.include_router(
+    app_v1,
+    prefix="/v1",
+    dependencies=[Depends(check_jwt_token), Depends(check_test_redis)],
+)
+app.include_router(
+    app_v2,
+    prefix="/v2",
+    dependencies=[Depends(check_jwt_token), Depends(check_test_redis)],
+)
 
 
 @app.on_event("startup")
@@ -53,9 +72,11 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         jwt_user_dict = {"username": form_data.username, "password": form_data.password}
         jwt_user = JWTUser(**jwt_user_dict)
         user = await authenticate_user(jwt_user)
-        await r.redis.set(redis_key, pickle.dumps(user))
         if user is None:
-            raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
+            raise HTTPException(
+                status_code=HTTP_401_UNAUTHORIZED, detail=TOKEN_INVALID_CREDENTIALS_MSG
+            )
+        await r.redis.set(redis_key, pickle.dumps(user))
     else:
         user = pickle.loads(user)
     jwt_token = create_jwt_token(user)
@@ -82,5 +103,5 @@ async def middleware(request: Request, call_next):
     return response
 
 
-if __name__ == '__main__':
-    uvicorn.run(app, port=8000, host='127.0.0.1')
+if __name__ == "__main__":
+    uvicorn.run(app, port=8000, host="127.0.0.1")

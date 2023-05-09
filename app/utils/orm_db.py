@@ -1,4 +1,4 @@
-from sqlalchemy import (MetaData, create_engine, Table, Column, Integer, Text, ARRAY)
+from sqlalchemy import MetaData, create_engine, Table, Column, Integer, Text, ARRAY
 from app.utils.constants import DB_URL
 
 metadata = MetaData()
@@ -10,5 +10,5 @@ authors = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("name", Text),
-    Column("books", ARRAY(Text))
+    Column("books", ARRAY(Text)),
 )

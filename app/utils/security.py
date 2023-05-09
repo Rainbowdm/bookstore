@@ -3,7 +3,14 @@ from passlib.context import CryptContext
 
 from app.models.jwt_user import JWTUser
 from datetime import datetime, timedelta
-from app.utils.constants import JWT_EXPIRATION_TIME_MINUTES, JWT_ALGORITH, JW_SECRET_KEY
+from app.utils.constants import (
+    JWT_EXPIRATION_TIME_MINUTES,
+    JWT_ALGORITH,
+    JW_SECRET_KEY,
+    JWT_EXPIRED_MSG,
+    JWT_INVALID_MSG,
+    JWT_WRONG_ROLE,
+)
 import jwt
 from fastapi import Depends, HTTPException
 import time
@@ -58,9 +65,17 @@ async def check_jwt_token(token: str = Depends(oauth_schema)):
             is_valid = await db_check_jwt_username(username)
             if is_valid:
                 return final_checks(role)
+            else:
+                raise HTTPException(
+                    status_code=HTTP_401_UNAUTHORIZED,
+                    detail=JWT_INVALID_MSG,
+                )
+        else:
+            raise HTTPException(
+                status_code=HTTP_401_UNAUTHORIZED, detail=JWT_EXPIRED_MSG
+            )
     except Exception as e:
         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
-    raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
 
 
 # Last checking and returning the final result
@@ -68,4 +83,4 @@ def final_checks(role: str):
     if role == "admin":
         return True
     else:
-        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail=JWT_WRONG_ROLE)

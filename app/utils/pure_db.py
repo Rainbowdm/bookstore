@@ -42,6 +42,7 @@ async def fetch(query, is_one, values=None):
     print(out)
     return out
 
+
 # query = "insert into books values (:custom, :name, :author, :year)"
 # values = [
 #     {"custom": "isbn2", "name": "book2", "author": "author2", "year": 2021},

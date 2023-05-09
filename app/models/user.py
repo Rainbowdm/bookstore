@@ -4,8 +4,8 @@ from fastapi import Query
 
 
 class Role(str, enum.Enum):
-    admin: str = 'admin'
-    personal: str = 'personal'
+    admin: str = "admin"
+    personal: str = "personal"
 
 
 class User(BaseModel):
