@@ -12,5 +12,8 @@ ssh root@209.38.237.156 'docker run --name=bookstore-api -d -e MODULE_NAME="main
 ssh root@209.38.237.156 'docker stop api-nginx'
 ssh root@209.38.237.156 'docker rm api-nginx'
 
-ssh root@209.38.237.156 'docker build -t bookstore-nginx ~/bookstore/nginx-reverse-proxy'
-ssh root@209.38.237.156 'docker run --name=api-nginx -d -p 80:80 bookstore-nginx'
+#ssh root@209.38.237.156 'docker build -t bookstore-nginx ~/bookstore/nginx-reverse-proxy'
+#ssh root@209.38.237.156 'docker run --name=api-nginx -d -p 80:80 bookstore-nginx'
+
+ssh root@209.38.237.156 'docker build -t bookstore-nginx ~/bookstore/nginx-https'
+ssh root@209.38.237.156 'docker run --name=api-nginx -d -p 80:80 -p 443:443 -e DOMAIN=bookstores.world -e EMAIL=dim8035@gmail.com bookstore-nginx'
