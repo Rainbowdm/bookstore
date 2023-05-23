@@ -31,7 +31,7 @@ UPLOAD_PHOTO_URL = f"https://api.imgbb.com/1/upload?key={UPLOAD_PHOTO_APIKEY}"
 REDIS_URL = os.getenv("REDIS_URL")
 REDIS_URL_PRODUCTION = os.getenv("REDIS_URL_PRODUCTION")
 
-TESTING = False
+TESTING = True
 IS_LOAD_TEST = False
 os.environ["PRODUCTION"] = "PRODUCTION"
 IS_PRODUCTION = True if os.environ["PRODUCTION"] == "true" else False
